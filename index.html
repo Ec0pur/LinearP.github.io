@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PERTIDAKSAMAAN LINIER</title>
+        <style>
+            #catatan{
+                font-size:8pt;
+                font-style: italic;
+
+            }
+            #tabel{
+                margin: 0 20px;
+            }
+            .kolom{
+                display: grid;
+                grid-gap: 10px;
+
+            }
+            .penuh{
+                width: 100%;
+            }
+            .putih{
+                color: white;
+            }
+            .bold{
+                font-weight: bold;
+
+            }
+            .td{
+                width: 10px;
+            }
+            .judul{
+                color: white;
+                font-size: 22pt;
+                position: absolute;
+                top: 3px;
+                right: 25px;
+
+            }
+            .judul2{
+                color: white;
+                font-size: 22pt;
+                width: 100%;
+            }
+            #input{
+                width: 350px;
+                height: 400px;
+                margin: 150px auto () auto;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+            .bintang{
+                color: red;
+                position: relative;
+                top: -5px;
+            }
+            .spasi{
+                height: 50px;
+
+            }
+        </style>
+    </head>
+    <body>
+        <div class="navbar-fixed">
+            <nav class="nav-extended blue">
+                <div class="nav-wrapper hide-on-large-only blue darken-2">
+                    <a href="#" class="brand-logo judul2 center bold"><h6>PERTIDAKSAMAAN LINER</h6></a>
+                </div>
+                <div class="nav-content">
+                    <ul class="row tabs tabs-transparant">
+                        <li class="tab col s3 12 bold"><a href="#input" class="activ">Input</a></li>
+                        <li class="tab col s3 12 bold"><a href="#tabel" class="activ">Tabel</a></li>
+                        <li class="tab col s3 12 bold"><a href="#hasil" class="activ">Hasil</a></li>
+                        <div class="right hide-on-med-and-down"><label class="judul bold">Pertidaksaaan Linier</label></div>
+
+                    </ul>
+
+                </div>
+            </nav>
+        </div>
+        <div id="tabel">
+            <form>
+                <div class="spasi hide-on-large-only"></div>
+                <div class="kolom" id="inputTabel"></div>
+            </form>
+        </div>
+        <div class="container row" id="input">
+            <div class="z-depth-1 grey lighten-4 col s12">
+                <div class="input-field col s12">
+                    <select id="jumlahVar"></select>
+                </div>
+                <div class="input-field col s12">
+                    <select id="minmak">
+                        <option value=">=">Minimasi</option>
+                        <option value="<=">Maksimasi</option>
+                    </select>
+                </div>
+                <div class="input-field col s12">
+                    <a href="#tabel" class="waves-effect wawes-ligh blue btn col s12 bold" id="tombolBuatTabel">Buat Tabel<i class="material-icon right">send</i></a>
+                    
+                </div>
+                <div class="input-field col s12">
+                    <a href="#tabel" class="waves-effect wawes-ligh blue btn col s12 bold" id="tombolReset">Reset<i class="material-icon right">cached</i></a>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="row" id="hasil">
+            <div class="col s12 spasi hide-on-large-only"></div>
+            <div class="col l1 hide hide-on-small-only"></div>
+            <div class="col s12 12" id="hasil1"></div>
+            <div class="col s12 156" id="hasil2"></div>
+           <div class="col s12 12" id="hasil3"></div>
+
+        </div>
+        <script>
+            let hanyaAngka;
+            let jumlahVar;
+            let huruf=[];
+            let matrik=[];
+            let m=[];
+            let z=[]
+            let
+            tombolBuatTabel=document.querySelector("#tombolBuatTabel");
+            let tombolReset=document.querySelector("#tombolReset");
+            let minmak=document.querySelector("#minmak");
+            let nodeJumlahVar=document.querySelector("#jumlahVar");
+            window.onbeforeunload=(e)=>{return 0;} //peringatan meninggalkan halaman
+            function refreshNode(){
+                M.updateTextFields();
+                M.FormSelct.init(document.querySelectorAll('select')); //inisiasi selec option material cdd
+                M.Tooltip.init(document.querySelectorAll('.tooltipped')); //inisiasi tooltip option material cdd
+                let instance= M.Tabs.init(document.querySelectorAll('.tabs')); //inisiasi Tabs ption material cdd
+                let sel=document.querySelectorAll('Jumlah'); //inisiasi selec option material cdd
+                for(let i=2; i<=8; i++){
+                    let opt=document.createElement('option');
+                    opt.appendChild(document.createTextNode(i+'Variabel'));
+                    opt.value=i;
+                    sel.appendChild(opt);
+
+                }
+                refreshNode();
+                tombolReset.onclick=()=>{
+                    reset=confirm('Atur ulang data hitungan, apakah anda yakin?');
+                    if(reset==true){
+                        tombolReset.classList.add('disbled');
+                        tombolBuatTabel.classList.remove('disabled');
+                        minmak.disabled=false;
+                        nodeJumlahVar.disabled=false;
+                        refreshNode();
+                        documen.querySelector('#inputTabel').innerHTML=";"
+                        for(let i=1;i<=3;i++){
+                            documen.querySelector('#hasil'+1).innerHTML=";"
+                        }
+                    }
+                }
+                tombolBuatTabel.onclick=()=>{
+                    instance.select('tabel');
+                    tombolReset.classList.remove('disabled');
+                    tombolBuatTabel.classList.remove('disabled');
+                    minmak.disabled=true;
+                        nodeJumlahVar.disabled=true;
+                        refreshNode();
+                    jumlahVar=parseInt(nodeJumlahVar.value);
+                    for(i=0;i<jumlahVar;i++){
+                        huruf[i]=String.fromCharCode(65+i);
+                    }
+                    let inputTabel='<div class="input-field"><input type="text" class="validate" disabled></div>';
+                    for(i=0;i<jumlahVar;i++){
+                        inputTabel+='<div class="input-field"> <input type="text" class="validate Variabel"> <label class="hide-on-med-and-down">Variabel ${huruf[i]}</label><label class="hide-on-large-only">Variabel ${huruf[i]}</label>       </div>';
+                    }
+                    inputTabel+='<div class="input-field"> <input type="text" class="validate" value="Kapasitas"></div>';
+                    for(i=1;i<jumlahVar;i++){
+                        inputTabel+='<div class="input-field"><input type="text" class="validate elemen"><label class="hide-on-med-and-down">Elemen ${i}</label><label class="hide-on-large-only">${i}</label></div>';
+                    }
+                    for(let j=0;jumlahVar;j++){
+                        inputTabel+='<div class="input-field"><input type="number" class="validatehanyaAngka persamaan ${i}"><label>${huruf[j]+i}<label class="bintang">*</label></label></div>';
+                    }
+                    inputTabel+='<div class="input-field"><input type="number" class="validatehanyaAngka persamaan${i} kolomZ"><label>Z${i}<label class="bintang"></label></label></div>';
+                    inputTabel+='<div class="input-field"><input type="text" class="validate" id="kolomFtujuan" value="Biaua/laba"><label>Z</label> </div>';
+                    for(let i=0;jumlahVar;i++){
+                        inputTabel+= '<div class="input-field"><input type="number" class="validatehanyaAngka barisZ"><label>${huruf[i]}z<label class="bintang">*</label></label></div>';
+                    }
+                    inputTabel+='<div class="input-field col s12"><a class="waves-effect wawes-ligh blue btn penuh" onclick="hitung()"><label class="hide-on-small-only putih bold">Hitung<i class="material-icons right">send</i></label><label class="hide-on-med-and-up"><i class="material-icons center putih">send</i></label></a></div>';
+                    document.querySelector('#inputTabel').innerHTML+=inputTabel;
+                    refreshNode();
+                    //membagi kolom grid
+                    let grid='auto auto';
+                    for (let i=0;i<jumlahVar;i++){
+                        grid+='auto';
+                    }
+                    document.querySelector('.kolom').style['grid-template-columns']=grid;
+                    //membuat input biaya berisi angka
+                    hanyaAngka=document.querySelectorAll('.hanyaAngka');
+                    hanyaAngka.forEach((a,b)=>{
+                        a.oninput=function(){
+                            this.value=this.value.replace(/[^0-9-]/g,'');
+                        };
+                    });
+                }
+                function hitung(){
+                    //cek input kosong atau tidak
+                    let lanjut=true;
+                    for(let i=0;i<hanyaAngka.length;i++){
+                        if(hanyaAngka[i].value.length==0){
+                            lanjut=false;
+                            break;
+                        }
+                    }
+                    if(lanjut==false){
+                        $.notify('Silahkan mengisi semua kolom *!');
+                    }else{
+                        instance.select('hasil');
+                        z=[];//hapus data perhitungan sebalumnya
+                        //ambil data persamaan
+                        for(let i=0;i<jumlahVar;i++){
+                            matriks[i]=[].map.call(document.querySelectorAll('.persamaan'+(i+1)),(a)=>a.value);
+                        }
+                        //algoritma eliminasi persamaan
+                        let h=0;
+                        let n=matriks.map((a)=>a.slice());
+                        let m=matriks.map((a)=>a.slice());
+                        for(let i=jumlahVar-1;i>=0;i--){
+                            for(let j=0; j<i;j++){
+                                let n1=n[0].map(a=>(a*n[1][h]));
+                                let n2=n[1].map(a=>(a*n[0][h]));
+                                let n3=n1.map((a,b)=>a-n2[b]);
+                                n.shift();
+                                n.push(n3);
+                                m.push(n3);
+
+                            }
+                            n.shift();
+                            h++;
+                        }
+                        //algoritma subtitusi persamaan
+                        let ml=m.length;
+                        let ml0=m[0].length-1;
+                        let h2=1, h3=1;
+                        let teks='';
+                        for(let i=1;jumlahVar;i++){
+                            teks+='z.unshifht((m[ml-h2][ml0]))';
+                            for(let j=1;j<i;j++){
+                                teks+='-m[ml-h2][ml0-'+j+']*z[z.length-'+j+']';
+                            }
+                            teks+=') / m [ml-h2][ml0-'+i+']);';
+                            eval(teks);
+                            h3++,h2=h2+h3;
+                            teks='';
+                        }
+                        //ambil data variable, element & barisZ
+                        let namaVar=[].map.call(document.querySelectorAll('.variabel'),(a)=>{
+                            let b=a.value;
+                            if(b=='' || b==null){
+                                return a.nextElementSibling.innerHTML;
+                            }else{
+                                return b;
+                            }
+                        });
+                        let namaE1=[].map.call(document.querySelectorAll('.element'),(a)=>{
+                            let b=a.value;
+                            if(b=='' || b==null){
+                                return a.nextElementSibling.innerHTML;
+                            }else{
+                                return b;
+                            }
+                        });
+                        let barisZ=[].map.call(document.querySelectorAll('.barisZ'),(a)=>a.value);
+                        //ubah array menjadi string
+                        let teksVar='';
+                        namaVar.forEach((a,b)=>teksVar+='<tr><td class="td">'+huruf[b]+'</td><td>=&nbsp'+a+'</td></tr>');
+                        let teksBarisZ='';
+                        barisZ.forEach((a,b)=>teksBarisZ+=a+huruf[b]+'+');
+                        teksBarisZ=teksBarisZ.slice(0,-3);
+                        let matriks1=matriks.map((a)=>a.slice());
+                        for(let i=0;i<matriks1.length;i++){
+                            matriks1[i].pop();
+                        }
+                        let tanda=minmak.value;
+                        let teksPersamaan='';
+                        for(let i=0;i<jumlahVar;i++){
+                            teksPersamaan+='<tr><td class="right">';
+                            matriks1[i].forEach((a,b)=>teksPersamaan+=a+huruf[b]+'+');
+                            teksPersamaan=teksPersamaan.slice(0,-3)+'</td><td>'+tanda+''+matriks[i][matriks[i].length-1]+'</td><td> &nbsp&nbsp&nbsp</td></tr>';
+                        }
+                        teksPersamaan=teksPersamaan.replace(/(\+-)/g,'-');
+                        //console.log ('teksPersamaan');
+                        console.table(matriks);
+                        console.log('HP:{'+Z+'}');
+                        z=z.map((a)=>parseFloat(a).toFixed(5));
+                        console.log('HP (desimal) :{'+Z+'}');
+                        z=z.map((a)=>parseInt(a));
+                        console.log('HP (bulat) :{'+Z+'}');
+                        let teksHasil='';
+                        for(let i=0; i<jumlahVar;i++)
+                            {
+                                teksHasil+='<tr><td  class="td">'+huruf[i]+'</td><td>=&nbsp'+z[i]+'</td></tr>';
+
+                        }
+                        let perkalianZ=[].maps.call(barixZ,(a,b)=>a*Z[b]);
+                        letzAkhir= perkalianZ.reduce((a)=>a+b,0);
+                        document.querySelector('#hasil1').innerHTML='<table class="highligh tabelHasil centered"><thead><tr><th colspan="2"><h5 class="center"><b>Variabel</b></h5></th></tr></thead><tbody>${teksVar}</tbody></table>';
+                        document.querySelector('#hasil2').innerHTML='<table class="highligh tabelHasil centered"><thead><tr><th colspan="2"><h5 class="center"><b>FUngsi Tujuan</b></h5></th></tr></thead><tbody>${teksBarisZ}</td></tr></tbody></table><div><br></div><table class="highligh tabelHasil centered"><thead><tr><th colspan=3>FUngsi Kendala<h5 class="bold center"></h5></th></tr></thead><body>${tteksPersamaan)<tr><td class="right">A</td><td>>=0</td><td>$nbsp</td></tr><tr><td class="right">B</td><td>>=0</td><td>$nbsp</td></tr></body></table>';
+                        document.querySelector('#hasil3').innerHTML='<table class="highligh tabelHasil">            <thead>                <tr>                    <th colspan="2"><h5 class="center"><b>Hasil Perhitungan</b></h5>                    </th>                </tr>            </thead>            <tbody> ${teksHasil}                <tr>                    <td class="td">Z</td>                    <td>=&nbsp${zAkhir}</td>                </tr>            </tbody></table><br><label id="catatan">Catatan:<br>Karena ini adalah pertidaksamaan linear, hasil perhitungan adalah bilangan bulat.</label>';
+                    }//else
+                } //fungsi hitung
+            }
+
+        </script>
+
+        
+      
+        
+
+       
+    </body> 
+</html>
